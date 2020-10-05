@@ -81,7 +81,23 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#cassandra-statefulsets-object-specs" class="nav-link">Cassandra Statefulsets Object Specs</a>
+            <li class="nav-item" data-level="2"><a href="#cassandra-statefulsets-object-specs-from-kubernetesio" class="nav-link">Cassandra Statefulsets Object Specs From kubernetes.io</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#installing-cassandra" class="nav-link">Installing Cassandra</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#scaling-cassandra" class="nav-link">Scaling Cassandra</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#failover-pods" class="nav-link">Failover Pods</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#failover-nodes" class="nav-link">Failover Nodes</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -102,23 +118,23 @@
 <li>Scaling.</li>
 <li>Rolling Updates.</li>
 </ul>
-<h2 id="cassandra-statefulsets-object-specs">Cassandra Statefulsets Object Specs</h2>
+<h2 id="cassandra-statefulsets-object-specs-from-kubernetesio">Cassandra Statefulsets Object Specs From kubernetes.io</h2>
 <ol>
-<li>Pod Selector</li>
-<li>Ordinal Index</li>
-<li>Network ID</li>
-<li>Pod Identity </li>
-<li>Pod Name Label </li>
-<li>Pod Management Policies</li>
-<li>OrderedReady Pod Management</li>
-<li>Parallel Pod Management</li>
-<li>Update Strategies</li>
-<li>On Delete</li>
-<li>Rolling Updates</li>
-<li>Forced Rollback</li>
+<li><code>Pod Selector</code></li>
+<li><code>Ordinal Index</code></li>
+<li><code>Network ID</code></li>
+<li><code>Pod Identity</code> </li>
+<li><code>Pod Name Label</code> </li>
+<li><code>Pod Management Policies</code></li>
+<li><code>OrderedReady Pod Management</code></li>
+<li><code>Parallel Pod Management</code></li>
+<li><code>Update Strategies</code></li>
+<li><code>On Delete</code></li>
+<li><code>Rolling Updates</code></li>
+<li><code>Forced Rollback</code></li>
 </ol>
-<hr />
-<p>apiVersion: v1
+<pre><code>
+apiVersion: v1
 kind: Service
 metadata:
   name: nginx
@@ -130,9 +146,9 @@ spec:
     name: web
   clusterIP: None
   selector:
-    app: nginx</p>
-<hr />
-<p>apiVersion: apps/v1
+    app: nginx
+---
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: web
@@ -140,7 +156,7 @@ spec:
   selector:
     matchLabels:
       app: nginx # has to match .spec.template.metadata.labels
-  serviceName: "nginx"
+  serviceName: &quot;nginx&quot;
   replicas: 3 # by default is 1
   template:
     metadata:
@@ -161,12 +177,154 @@ spec:
   - metadata:
       name: www
     spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "my-storage-class"
+      accessModes: [ &quot;ReadWriteOnce&quot; ]
+      storageClassName: &quot;my-storage-class&quot;
       resources:
         requests:
-          storage: 1Gi</p>
-<p>Protulit insomni [in ludit](http://hospes.com/perfudsustinet tutaque sanctique vertit secum remos, edidici! Et tota erat.</p></div>
+          storage: 1Gi
+
+</code></pre>
+
+<h2 id="installing-cassandra">Installing Cassandra</h2>
+<p>Create cassandra headless object headless.yml </p>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cassandra
+  name: cassandra
+spec:
+  clusterIP: None
+  ports:
+    - port: 9042
+  selector:
+    app: cassandra
+</code></pre>
+
+<p>Apply the object file</p>
+<p><code>kubectl apply -f headless.yml</code></p>
+<p>Create some persistant volumes <code>https://kubernetes.io/docs/concepts/storage/persistent-volumes/</code></p>
+<p>Create a strorage class object for the PV <code>csc.yml</code></p>
+<pre><code>kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: csc
+provisioner: yours_elvis_cloud/volume_path
+parameters:
+  repl: &quot;2&quot;
+  priority_io: &quot;high&quot;
+  group: &quot;cvg&quot;
+  fg: &quot;true&quot;
+</code></pre>
+
+<p>Apply the config</p>
+<p><code>kubectl apply -f csc.yml</code></p>
+<p>Create a 4 Replicasets Statefulsets cassandra <code>statefull.yml</code></p>
+<pre><code>apiVersion: &quot;apps/v1&quot;
+kind: StatefulSet
+metadata:
+  name: cassandra
+spec:
+  serviceName: cassandra
+  selector:
+    matchLabels:
+      app: cassandra
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      # Use the stork scheduler to enable more efficient placement of the pods
+      schedulerName: stork
+      containers:
+      - name: cassandra
+        image: gcr.io/google-samples/cassandra:v12
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7000
+          name: intra-node
+        - containerPort: 7001
+          name: tls-intra-node
+        - containerPort: 7199
+          name: jmx
+        - containerPort: 9042
+          name: cql
+        resources:
+          limits:
+            cpu: &quot;500m&quot;
+            memory: 1Gi
+          requests:
+           cpu: &quot;500m&quot;
+           memory: 1Gi
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
+        lifecycle:
+          preStop:
+            exec:
+              command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;PID=$(pidof java) &amp;&amp; kill $PID &amp;&amp; while ps -p $PID &gt; /dev/null; do sleep 1; done&quot;]
+        env:
+          - name: MAX_HEAP_SIZE
+            value: 512M
+          - name: HEAP_NEWSIZE
+            value: 100M
+          - name: CASSANDRA_SEEDS
+            value: &quot;cassandra-0.cassandra.default.svc.cluster.local&quot;
+          - name: CASSANDRA_CLUSTER_NAME
+            value: &quot;K8Demo&quot;
+          - name: CASSANDRA_DC
+            value: &quot;DC1-K8Demo&quot;
+          - name: CASSANDRA_RACK
+            value: &quot;Rack1-K8Demo&quot;
+          - name: CASSANDRA_AUTO_BOOTSTRAP
+            value: &quot;false&quot;
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /ready-probe.sh
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        # These volume mounts are persistent. They are like inline claims,
+        # but not exactly because the names need to match exactly one of
+        # the stateful pod volumes.
+        volumeMounts:
+        - name: cassandra-data
+          mountPath: /var/lib/cassandra
+  # These are converted to volume claims by the controller
+  # and mounted at the paths mentioned above.
+  volumeClaimTemplates:
+  - metadata:
+      name: cassandra-data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: csc
+    spec:
+      accessModes: [ &quot;ReadWriteOnce&quot; ]
+      resources:
+        requests:
+          storage: 1Gi
+</code></pre>
+
+<p>Apply the config <code>kubectl apply -f statefull.yml</code></p>
+<h2 id="scaling-cassandra">Scaling Cassandra</h2>
+<p>Scaling Cassandra from 4 to 5 and the other way round</p>
+<p><code>kubectl scale sts cassandra --replicas=5</code></p>
+<h2 id="failover-pods">Failover Pods</h2>
+<p>Assuming there is data living inside cassandra, use the nodetool utility to figure out which node is hosting the data in cassandra <code>nodetool getendpoints somedb emp 000000</code></p>
+<p>Use <code>kubectl cordon</code> utility to force the identified node to reschedule pods to another node</p>
+<h2 id="failover-nodes">Failover Nodes</h2>
+<p>Use the <code>kubectl delete drain</code> and `kubectl delete node' which will cause the stateful set to reschedule resources to other nodes</p></div>
             </div>
         </div>
 
