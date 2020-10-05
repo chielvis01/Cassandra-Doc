@@ -11,7 +11,7 @@ We need statefulSets for the following
 - Rolling Updates.
 
 
-## Cassandra Statefulsets Object Specs
+## Cassandra Statefulsets Object Specs From kubernetes.io
 
 1. `Pod Selector`
 2. `Ordinal Index`
@@ -79,3 +79,47 @@ spec:
           storage: 1Gi
           
 ```
+
+## Installing Cassandra 
+
+Create cassandra headless object headless.yml 
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cassandra
+  name: cassandra
+spec:
+  clusterIP: None
+  ports:
+    - port: 9042
+  selector:
+    app: cassandra
+```
+
+Apply the object file
+
+``` kubectl apply -f headless.yml ```
+
+Create some persistant volumes ` https://kubernetes.io/docs/concepts/storage/persistent-volumes/`
+
+Create a strorage class object for the PV `csc.yml`
+
+```
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: csc
+provisioner: yours_elvis_cloud/volume_path
+parameters:
+  repl: "2"
+  priority_io: "high"
+  group: "cvg"
+  fg: "true"
+```
+
+Apply the config
+
+```kubectl apply -f csc.yml```
