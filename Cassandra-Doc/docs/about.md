@@ -124,7 +124,7 @@ Apply the config
 
 ```kubectl apply -f csc.yml```
 
-Create a 4 Replicasets Statefulsets cassandra `stateless.yml`
+Create a 4 Replicasets Statefulsets cassandra `statefull.yml`
 
 ```
 apiVersion: "apps/v1"
@@ -223,3 +223,21 @@ spec:
           storage: 1Gi
 ```
 
+Apply the config `kubectl apply -f statefull.yml`
+
+## Scaling Cassandra
+
+Scaling Cassandra from 4 to 5 and the other way round
+
+``` kubectl scale sts cassandra --replicas=5 ```
+
+## Failover Pods 
+
+Assuming there is data living inside cassandra, use the nodetool utility to figure out which node is hosting the data in cassandra ` nodetool getendpoints somedb emp 000000 `
+
+
+Use `kubectl cordon` utility to force the identified node to reschedule pods to another node
+
+## Failover Nodes
+
+Use the `kubectl delete drain` and `kubectl delete node' which will cause the stateful set to reschedule resources to other nodes
