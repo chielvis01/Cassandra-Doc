@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Praebet ne fusus - My Docs</title>
+        <title>StatefulSets - My Docs</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -37,7 +37,7 @@
                                 <a href=".." class="nav-link">Welcome to MkDocs</a>
                             </li>
                             <li class="navitem active">
-                                <a href="./" class="nav-link">Praebet ne fusus</a>
+                                <a href="./" class="nav-link">StatefulSets</a>
                             </li>
                         </ul>
 
@@ -75,17 +75,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#praebet-ne-fusus" class="nav-link">Praebet ne fusus</a>
+            <li class="nav-item" data-level="1"><a href="#statefulsets" class="nav-link">StatefulSets</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#dividuae-adspexit-furti-supposita-spemque-et-manat" class="nav-link">Dividuae adspexit furti supposita spemque et manat</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#deductus-iecur" class="nav-link">Deductus iecur</a>
+            <li class="nav-item" data-level="2"><a href="#using-statefulsets" class="nav-link">Using StatefulSets</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#illa-vanos-atque-tale-altam" class="nav-link">Illa vanos atque tale altam</a>
+            <li class="nav-item" data-level="2"><a href="#cassandra-statefulsets-object-specs" class="nav-link">Cassandra Statefulsets Object Specs</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -96,64 +92,81 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="praebet-ne-fusus">Praebet ne fusus</h1>
-<h2 id="dividuae-adspexit-furti-supposita-spemque-et-manat">Dividuae adspexit furti supposita spemque et manat</h2>
-<p>Lorem markdownum violentior Cadmi. De sub fatum <em>litusque</em>, nympha: manifesta
-putes, his puppim tremulis aristis iubeatis. Sic risit quae respondit habuit
-saxeus Phoronidos glorior contra est effigiem ille <a href="http://sanguine-peremi.com/solixionis.html">nec
-filum</a> inquirant. Cum munere illis:
-mora adhibet mirantibus mille, ab grave puppimque vero via muneris vetustas vero
-mihi tenebit? Movitque quae nostris formidine, Penthea filia, nec res nec
-honorem nubila quoque secreta sint.</p>
+<h1 id="statefulsets">StatefulSets</h1>
+<h2 id="using-statefulsets">Using StatefulSets</h2>
+<p>We need statefulSets for the following</p>
 <ul>
-<li>Damnatus genetricis saepe ille</li>
-<li>Paridis munus</li>
-<li>Eras natos in repulsa tauri e quanto</li>
-<li>Dextram ligatis</li>
-<li>Variusque tua</li>
-<li>Obstrepuere corpore solis liquidis nollet unda falsa</li>
+<li>Unique network identifiers.</li>
+<li>Persistent storage.</li>
+<li>Deployments.</li>
+<li>Scaling.</li>
+<li>Rolling Updates.</li>
 </ul>
-<p>Iove quam meque, seducunt usu fert venis, non faciebat in duratos neque?
-Hecateia quae ora retia ab sit stagnare ureris.</p>
-<h2 id="deductus-iecur">Deductus iecur</h2>
-<p>Australem posuisti auras, se dat ter hac perfidiae simul, crudelis, diva. Pignus
-populi, si hanc, nomen venientique falsum fores senserit Ancaeus arce Baucis
-noviens diurnis anima. Cita virga iterum anima apud ait oculos si magis stipes,
-videre? Stratoque auras commentaque Aegeus ferre: me induruit guttur munere et?
-Gemmata virgo, <a href="http://per-color.org/">et tu potest</a> agendo munere mirantis
-Adonis quicquid Pasiphaen mandabat In semina tumulo, nec.</p>
+<h2 id="cassandra-statefulsets-object-specs">Cassandra Statefulsets Object Specs</h2>
 <ol>
-<li>De illic attonitas inmedicabile undas litus</li>
-<li>Transitus veniam</li>
-<li>Sidera vires extremum Iphitiden facinusque flos</li>
-<li>Qui huic quae ignarus</li>
-<li>Medio Clymeni ordine quod pectore Rhoetus</li>
-<li>Mota adulterium flexisque sacras mensura adspexit refert</li>
+<li>Pod Selector</li>
+<li>Ordinal Index</li>
+<li>Network ID</li>
+<li>Pod Identity </li>
+<li>Pod Name Label </li>
+<li>Pod Management Policies</li>
+<li>OrderedReady Pod Management</li>
+<li>Parallel Pod Management</li>
+<li>Update Strategies</li>
+<li>On Delete</li>
+<li>Rolling Updates</li>
+<li>Forced Rollback</li>
 </ol>
-<p>Veris sic: et caede, in cultu ruinas caeli, sibi! Quantusque metuenda Viderat
-rupisset vanum quaerentes gentemque litusque umeros ferox fidesque praemia,
-adiutrixque hanc ut condidit <a href="http://ettuum.org/">dicta</a>. Muneris viri est,
-nobiscum nunc ira Aeneae pariterque, cum.</p>
-<h2 id="illa-vanos-atque-tale-altam">Illa vanos atque tale altam</h2>
-<p>Mihi nomine demum, percussaque aduncae sua alias, erubuit Ecce, medioque, silvas
-ventis. Duxit hunc novissima coniunx faciem et <em>vidi</em>, gemunt paelice. Pertimui
-Solis Iove; animi hunc dixit: novi Ino pectusque et letifera, at. Harenis
-quacumque <a href="http://corpora.org/breve.aspx">Praescia</a> dixit conplexus luminis,
-traderet sacra? Duris obsequio.</p>
-<pre><code>flopsGnuW(cloud_digital_rosetta.heat(software));
-bridge = point_windows(menuHubTitle);
-if (sidebar_ripcording - ip) {
-    crm += waveformFrozen(cyclePowerLion, p_gbps - phishing);
-    jquery(658822 - whiteDram, 4);
-    ppi_lun_panel(fsb_market * bar, dbms * dial);
-} else {
-    rasterCycleCase.scrolling_text += batch_bespoke;
-}
-var bitmap = nntpData + virtualization_keyboard.systemOpticalBalancing(
-        chip_outbox_copy, card, process_clone) + bmpSystem;
-</code></pre>
-<p>Protulit insomni <a href="http://hospes.com/perfudit.php">in ludit</a> ipso et terra
-sustinet tutaque sanctique vertit secum remos, edidici! Et tota erat.</p></div>
+<hr />
+<p>apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx</p>
+<hr />
+<p>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: nginx # has to match .spec.template.metadata.labels
+  serviceName: "nginx"
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: nginx # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: nginx
+        image: k8s.gcr.io/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "my-storage-class"
+      resources:
+        requests:
+          storage: 1Gi</p>
+<p>Protulit insomni [in ludit](http://hospes.com/perfudsustinet tutaque sanctique vertit secum remos, edidici! Et tota erat.</p></div>
             </div>
         </div>
 
