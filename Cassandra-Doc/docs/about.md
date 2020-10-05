@@ -26,7 +26,6 @@ We need statefulSets for the following
 11. Rolling Updates
 12. Forced Rollback
 
-***
 apiVersion: v1
 kind: Service
 metadata:
